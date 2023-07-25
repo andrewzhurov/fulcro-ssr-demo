@@ -1,3 +1,9 @@
+
+
+https://github.com/andrewzhurov/fulcro-ssr-demo/assets/13056889/ceaf388c-fc8b-4d73-a9d3-473c3a3a7e3a
+
+
+
 # Prerequisites
 
 This template utilizes GNU Make 4.x. You'll need to install it first 
