@@ -1,0 +1,21 @@
+{:env :dev
+ :taoensso.timbre/logging-config
+ {:level        :debug
+  :ns-blacklist ["shadow.cljs.devtools.server.worker.impl"]}
+
+ :io.pedestal.http/config
+ {:env                    :dev
+  :io.pedestal.http/join? false}
+
+ :org.cu.demo.server.xtdb-node/config
+ {:node-type :rocks}
+
+ :org.cu.demo.server.pathom-parser/config
+ {:connect-viz?    true
+  :index-explorer? true
+  :trace?          true
+  :log-responses?  true}
+
+ :org.cu.demo.server.service/config
+ {:dev?          true
+  :disable-csrf? true}}

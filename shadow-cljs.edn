@@ -1,0 +1,76 @@
+{:deps
+ {:aliases [:dev]}
+
+ :builds
+ {:main {:deps              {:aliases [:dev]}
+         :target            :browser
+         :output-dir        "resources/public/js/main"
+         :asset-path        "/js/main"
+         :module-hash-names true
+         :modules           {:main {:init-fn org.cu.demo.client.client-entry/init
+                                    :entries [org.cu.demo.client.client-entry]}}
+         :closure-defines   {malli.registry/type "custom"}
+         ;; guardrails checks only during dev
+         :dev               {:compiler-options {:external-config {:guardrails {}
+                                                                  :fulcro     {:wrap-inputs? false}}}
+                             :closure-defines  {
+                                                org.cu.demo.client.application/LOG-RESPONSES true
+                                                org.cu.demo.client.client-entry/LOG_LEVEL    "debug"}}
+         :release           {:build-options
+                             {:ns-aliases
+                              {com.fulcrologic.guardrails.core com.fulcrologic.guardrails.noop
+                               org.cu.demo.client.prn-debug    org.cu.demo.client.prn-debug-noop}}}
+         :devtools          {:after-load org.cu.demo.client.client-entry/refresh
+                             :preloads   [;; if using the chrome extension:
+                                          com.fulcrologic.fulcro.inspect.preload
+
+                                          ;; if using the electron app:
+                                          ;;com.fulcrologic.fulcro.inspect.websocket-preload
+
+                                          org.cu.demo.client.development-preload
+                                          com.fulcrologic.fulcro.inspect.dom-picker-preload]
+                             }}
+
+  :node-server {:target    :node-script
+                :main      org.cu.demo.node-server/main
+                :output-to "builds/node-server/node-server.js"
+                :devtools  {:before-load-async org.cu.demo.node-server/stop
+                            :after-load        org.cu.demo.node-server/start}
+                :compiler-options {:reader-features #{:node}}}
+  :test        {:target           :browser-test
+                :test-dir         "resources/public/js/test"
+                :ns-regexp        "-test$"
+                ;; static required for mocking to work
+                :compiler-options {:static-fns      false
+                                   :external-config {:guardrails {}}}
+                :devtools         {:http-port          8022
+                                   :http-resource-root "public"
+                                   :http-root          "resources/public/js/test"}}
+
+  :ci-tests {:target           :karma
+             :js-options       {:js-provider :shadow}
+             :compiler-options {:static-fns false} ; required for mocking to work
+             :output-to        "target/ci.js"
+             :ns-regexp        "-test$"}
+  :devcards {:target     :browser
+             :output-dir "resources/public/devcards/js"
+             :asset-path "/js"
+
+             :modules {:devcards {:entries [org.cu.demo.devcards]
+                                  :init-fn org.cu.demo.devcards/main}}
+
+             :devtools         {:http-port        4001
+                                :http-root        "resources/public/devcards"
+                                :push-state/index "devcards.html"
+                                :after-load       org.cu.demo.devcards/main}
+             :compiler-options {:devcards true}}
+  :workspaces {:target     :browser
+               :modules    {:workspaces {:entries [org.cu.demo.main-ws]
+                                         :init-fn org.cu.demo.main-ws/main}}
+                                        ;:ns-regexp  "-(test|ws)$"
+               :output-dir "resources/public/workspaces/js"
+               :asset-path "/js"
+               :devtools   {
+                            :http-root        "resources/public/workspaces"
+                            :push-state/index "workspaces.html"
+                            :http-port        8023}}}}

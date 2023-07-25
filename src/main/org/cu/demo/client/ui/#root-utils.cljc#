@@ -1,0 +1,6 @@
+(ns org.cu.demo.client.ui.root-utils
+  (:require
+   #?@(:node [["styletron-engine-atomic" :refer [Server] :rename {Server StyletronEngine}]
+              ["styletron-react" :refer [Provider]]]
+       :cljs [["styletron-engine-atomic" :refer [Client] :rename {Client StyletronEngine}]
+              ["styletron-react" :refer [Provider]]])))
